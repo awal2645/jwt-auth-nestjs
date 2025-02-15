@@ -4,6 +4,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { User, UserRole } from './entities/user.entity';
+import { CreateUserDto } from './dto/create-user.dto';
+import { LoginUserDto } from './dto/login-user.dto';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
 
 @Injectable()
 export class AuthService {
@@ -12,7 +15,9 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signup(email: string, password: string, role: UserRole = UserRole.USER) {
+  async signup(createUserDto: CreateUserDto) {
+    const { email, password, role = UserRole.USER } = createUserDto;
+
     const existingUser = await this.userRepository.findOne({ where: { email } });
     if (existingUser) throw new ConflictException('Email already in use');
 
@@ -22,7 +27,9 @@ export class AuthService {
     return this.userRepository.save(newUser);
   }
 
-  async login(email: string, password: string) {
+  async login(loginUserDto: LoginUserDto) {
+    const { email, password } = loginUserDto;
+    
     const user = await this.userRepository.findOne({ where: { email } });
     if (!user || !(await bcrypt.compare(password, user.password))) {
       throw new UnauthorizedException('Invalid credentials');
@@ -38,8 +45,9 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
 
-  async refreshToken(token: string) {
+  async refreshToken(refreshTokenDto: RefreshTokenDto) {
     try {
+      const { token } = refreshTokenDto;
       const payload = this.jwtService.verify(token, { secret: process.env.JWT_REFRESH_SECRET });
       const user = await this.userRepository.findOne({ where: { id: payload.sub, refreshToken: token } });
 

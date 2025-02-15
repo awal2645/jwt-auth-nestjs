@@ -223,5 +223,4 @@ JWT_REFRESH_EXPIRES_IN=7d
 
 ---
 
-### **🔥 Now your API is fully documented and ready to use! 🚀**
 

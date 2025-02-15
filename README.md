@@ -194,11 +194,10 @@ Authorization: Bearer YOUR_ADMIN_ACCESS_TOKEN_HERE
 
 ---
 
-## **📌 Setup for GitHub (README)**
 
 ### **Project Setup**
 ```bash
-git clone https://github.com/your-repo/jwt-auth-nestjs.git
+git clone https://github.com/awal2645/jwt-auth-nestjs.git
 cd jwt-auth-nestjs
 npm install
 ```
